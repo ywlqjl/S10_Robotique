@@ -2,8 +2,8 @@
 
 //Définition de constantes symboliques
 #define BUSSER_PIN 4
-#define SERVO_GAUCHE_PIN 12
 #define SERVO_GAUCHE_PIN 11
+#define SERVO_GAUCHE_PIN 10
 #define DUREE 6000
 
 // Variables globales
