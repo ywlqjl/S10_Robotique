@@ -16,12 +16,9 @@ void setup() {
 
     digitalWrite(LED_pin12, LOW);  //Broche 12 LED étiente
     digitalWrite(LED_pin13, HIGH);  //Broche 13 LED allumée
-
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-  
+void loop() {  
       digitalWrite(LED_pin12, HIGH);
       digitalWrite(LED_pin13, LOW);
       Serial.println("LED 12 etat haut");
@@ -31,6 +28,4 @@ void loop() {
       digitalWrite(LED_pin12, LOW);
       Serial.println("LED 12 etat bas");
       delay(TEMPO_T-TEMPO_T1);  //Temporisation
-
-
 }
