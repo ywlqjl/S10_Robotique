@@ -14,21 +14,16 @@ int largeur_implusion;
 
 void setup() 
 {
-  //Préparer le son pour l'avertissement
   tone(BUZZER_PIN, 3000);
   delay(1000);
   noTone(BUZZER_PIN);
   
   Serial.begin(9600);
-  //L'état début, deux en arrêt
   Servo_gauche.attach(SERVO_GAUCHE_PIN);  
   Servo_gauche.writeMicroseconds (1500);
   Servo_droit.attach(SERVO_DROIT_PIN);  
   Servo_droit.writeMicroseconds (1500);
-  
-  //Avancer pendant 6s
-  Avance(6000);
-  
+  Avance_Droite(5000);
   arret();
   
 }
@@ -38,7 +33,7 @@ void loop() {
 }
 
 
-//fonction: avance
+
 void Avance (int duree_deplacement) 
 {
   Servo_droit.writeMicroseconds(1300); 
@@ -46,10 +41,48 @@ void Avance (int duree_deplacement)
   delay (duree_deplacement);
 }
 
-
-//fonction: arret
 void arret (void) 
 {
   Servo_droit.detach (); 
   Servo_gauche.detach ();
+}
+
+
+void Recule (int duree_deplacement) 
+{
+  Servo_droit.writeMicroseconds(1700); 
+  Servo_gauche.writeMicroseconds(1300); 
+  delay (duree_deplacement);
+}
+
+void Gauche (int duree_deplacement) 
+{
+  Servo_droit.writeMicroseconds(1300); 
+  Servo_gauche.writeMicroseconds(1300); 
+  delay (duree_deplacement);
+}
+
+void Droite (int duree_deplacement) 
+{
+  Servo_droit.writeMicroseconds(1700); 
+  Servo_gauche.writeMicroseconds(1700); 
+  delay (duree_deplacement);
+}
+
+void Avance_Droite(int duree_deplacement){
+  Servo_droit.writeMicroseconds(1450); 
+  Servo_gauche.writeMicroseconds(1700); 
+  delay (duree_deplacement);
+}
+
+void Avance_Gauche(){
+  
+}
+
+void Recule_Droite(){
+  
+}
+
+void Recule_Gauche(){
+  
 }
