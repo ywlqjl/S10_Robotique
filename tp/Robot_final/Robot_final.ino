@@ -8,12 +8,14 @@
 #define LED_DROITE_PIN 13
 
 #define PHOTO_TRANSISTOR 3
-#define LUMINOSITE_SEUIL 700
+#define LUMINOSITE_SEUIL 500
 
 int val_mGauche = 0;
 int val_mDroite = 0;
 
 #define DUREE 6000
+#define CHANGEMENT_DIRECTION 900
+#define L 5.4
 
 // Variables globales
 Servo Servo_droite;
@@ -33,6 +35,11 @@ void setup()
   Servo_gauche.writeMicroseconds (1500);
   Servo_droite.attach(SERVO_DROITE_PIN);  
   Servo_droite.writeMicroseconds (1500);
+
+  pinMode (5, INPUT); // Pour la moustache gauche
+  pinMode (7, INPUT); // Pour la moustache droite
+  pinMode(LED_GAUCHE_PIN, OUTPUT); 
+  pinMode(LED_DROITE_PIN,OUTPUT); 
 //  arret();
 }
 
@@ -47,7 +54,7 @@ void loop() {
   Serial.println("Volts");
   
   delay(100);
-  Ma_fonction(V_num_A3);
+  Strategie_robot(V_num_A3);
   delay(100);
 }
 
@@ -117,15 +124,28 @@ void Recule_Droite(){
 //  delay (duree_deplacement);
 }
 
-void Ma_fonction(int V_num){
+void Ralentir(){
+  Servo_droite.writeMicroseconds(1400); 
+  Servo_gauche.writeMicroseconds(1600); 
+  delay(1000);
+  Servo_droite.writeMicroseconds(1450); 
+  Servo_gauche.writeMicroseconds(1550); 
+  delay (1000);
+  Servo_droite.writeMicroseconds(1480); 
+  Servo_gauche.writeMicroseconds(1520); 
+  delay (1000);
+}
 
-  pinMode (5, INPUT); // Pour la moustache gauche
-  pinMode (7, INPUT); // Pour la moustache droite
-  pinMode(LED_GAUCHE_PIN, OUTPUT); 
-  pinMode(LED_DROITE_PIN,OUTPUT); 
+void Tourner(int temps){
+  Servo_droite.writeMicroseconds(1300); 
+  Servo_gauche.writeMicroseconds(1300); 
+  delay(temps);
+}
+
+void Strategie_robot(int V_num){
+
   val_mGauche = digitalRead(5);
   val_mDroite = digitalRead(7);
-
   digitalWrite(LED_GAUCHE_PIN, 1-val_mGauche); 
   digitalWrite(LED_DROITE_PIN, 1-val_mDroite);  
 
@@ -134,7 +154,9 @@ void Ma_fonction(int V_num){
   //Si la luminosité est faible, le robot continue à avancer;
   //Si la luminosité est importante, le robot s'immobilise.
   if (V_num >= LUMINOSITE_SEUIL){ //Clair
+    Ralentir();
     arret2();
+    Tourner(CHANGEMENT_DIRECTION);
   }
   else{
       
@@ -143,19 +165,39 @@ void Ma_fonction(int V_num){
       }
       else if(val_mGauche == 0 && val_mDroite == 1){
         Recule_Droite();
-        delay(3000);
+        //degree: 360
+        delay(10500);
+        Tourner(CHANGEMENT_DIRECTION);
       }
       else if(val_mDroite == 0 && val_mGauche == 1){
         Recule_Gauche();
-        delay(3000);
+        //degree: 30
+        delay(1000);
       }
       else if(val_mDroite == 0 && val_mGauche == 0){ 
-        Recule();
-        delay(3000);
+      Recule();
+      delay(2000);
+      Tourner(CHANGEMENT_DIRECTION);
       }
   }
 }
 
 float D_To_A(int V_num){
   return (float) V_num * 5.0 /1024.0;
+}
+
+//calculer le degre
+float cal_degree(float v_d, float v_g, float degre){
+
+  float v = (v_d + v_g) /2; //Vitesse de robot: m/s
+  float p = L * (v_d + v_g) / (v_d - v_g); //Rayon de tourne: m
+  if(p >=0){
+    p = p;
+  }
+  else{
+    p = -p;
+  }
+  float w = v/p; //Vitesse angulaire: rad/s
+  float t = degre / (57.3 * w ) ; // temps de tourne : s
+  return t;
 }

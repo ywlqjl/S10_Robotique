@@ -28,8 +28,7 @@ void setup()
   
   //Avancer pendant 6s
   Avance(6000);
-  
-  arret();
+  arret2();
   
 }
 
@@ -52,4 +51,10 @@ void arret (void)
 {
   Servo_droit.detach (); 
   Servo_gauche.detach ();
+}
+
+void arret2 (void) 
+{
+  Servo_droit.writeMicroseconds(1500); 
+  Servo_gauche.writeMicroseconds(1500); 
 }

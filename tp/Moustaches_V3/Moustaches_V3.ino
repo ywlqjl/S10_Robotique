@@ -10,6 +10,7 @@ int val_mGauche = 0;
 int val_mDroite = 0;
 
 #define DUREE 6000
+#define CHANGEMENT_DIRECTION 1000
 #define L 5.4
 //#define Pi 3.14
 
@@ -101,6 +102,11 @@ void Recule_Droite(){
 //  delay (duree_deplacement);
 }
 
+void Tourner(){
+  Servo_droite.writeMicroseconds(1300); 
+  Servo_gauche.writeMicroseconds(1300); 
+}
+
 void Ma_fonction(){
 
   pinMode (5, INPUT); // Pour la moustache gauche
@@ -119,16 +125,22 @@ void Ma_fonction(){
   }
   else if(val_mGauche == 0 && val_mDroite == 1){
     Recule_Droite();
-    delay(cal_degree(45));
+    //degree: 360
+    delay(10500);
+    Tourner();
+    delay(CHANGEMENT_DIRECTION);
     
   }
   else if(val_mDroite == 0 && val_mGauche == 1){
     Recule_Gauche();
-    delay(6000);
+    //degree: 30
+    delay(1000);
   }
   else if(val_mDroite == 0 && val_mGauche == 0){ 
     Recule();
-    delay(6000);
+    delay(1000);
+    Tourner();
+    delay(CHANGEMENT_DIRECTION);
   }
 }
 
@@ -136,7 +148,13 @@ float cal_degree(float v_d, float v_g, float degre){
 
   float v = (v_d + v_g) /2; //Vitesse de robot: m/s
   float p = L * (v_d + v_g) / (v_d - v_g); //Rayon de tourne: m
+  if(p >=0){
+    p = p;
+  }
+  else{
+    p = -p;
+  }
   float w = v/p; //Vitesse angulaire: rad/s
-  float t = (degre * PI) / (180 * w ) ; // temps de tourne : s
+  float t = degre / (57.3 * w ) ; // temps de tourne : s
   return t;
 }
